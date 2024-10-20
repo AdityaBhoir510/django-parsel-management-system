@@ -1,0 +1,462 @@
+{% extends 'baseDash.html' %}
+
+{% load get_status %}
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Dashboard</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div class="col-lg timeline">
+        {% if is_customer %}
+        <!-- timeline  -->
+        {% if active %}
+        {% for x in active reversed %}
+        <div class="card">
+            <h3 class="text-center text-success py-3">Active Shipment</h3>
+            {% if x.shipment_status == "assigned" or x.shipment_status == "start" or x.shipment_status == "pickup" %}
+            <span class="text-end px-5"><b>Expected pickup: </b>
+                {% if x.e_date %}
+                {{x.e_date}}
+                {% else %}
+                Unscheduled
+                {% endif %}
+            </span>
+            {% else %}
+            <span class="text-end px-5"><b>Expected delivery: </b>
+                {% if x.e_date %}
+                {{x.e_date}}
+                {% else %}
+                No update's
+                {% endif %}
+            </span>
+            {% endif %}
+            <div class="card mt-3">
+            </div>
+            <div class="card mt-2">
+            </div>
+            <div class="progress-stacked mx-5 my-3">
+                <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0"
+                    aria-valuemax="100" style="width: {{x.shipment_status|get_status:status}}%">
+                    <div class="progress-bar progress-bar-striped bg-danger">
+                    </div>
+                </div>
+                <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0"
+                    aria-valuemax="100" style="width: 5%">
+                    <div class="progress-bar progress-bar-striped bg-success">
+                        <img class="animalimg" src="{% static 'img/guy.png' %}" alt="guy">
+                    </div>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-md-2 text-center">My place</div>
+                <div class="col-md-2 text-end">Dealer1</div>
+                <div class="col-md-1"></div>
+                <div class="col-md-2 text-center">On Board</div>
+                <div class="col-md-1"></div>
+                <div class="col-md-2">Dealer2</div>
+                <div class="col-md-2 text-center">Recipent</div>
+            </div>
+        <!-- </div>
+        <div class="card border-top-success border-top-3 mb-3"> -->
+            <h5 class="card-header">Current shipment details<span class="card-title px-3"><b>Status:
+                    </b>{{x.shipment_status}}</span><span class="text-secondary">shipping_id #{{x.shipment_id}}</span>
+                {% if x.shipment_status == "assigned" %}
+                <a href="/updatestatus/{{x.id}}"><button class="btn btn-success mx-3">Mark as Picked Up</button>
+                </a>
+                {% endif %}
+            </h5>
+            <div class="card-body text-secondary row">
+                <div class="col-md-3">
+                    <p class="card-title pb-0 mb-1">Recipent details</p>
+                    <span class="card-text "><b>name: </b>{{x.n_recipent}}</span><br>
+                    <span class="card-text"><b>address:
+                        </b>{{x.n_recipent_add}}&nbsp;{{x.n_recipent_zip}}&nbsp;{{x.n_recipent_city}}&nbsp;{{x.n_recipent_country}}</span><br>
+                    <span class="card-text"><b>Mobile no.: </b>{{x.n_recipent_ph_no}}</span><br>
+                </div>
+                <div class="col-md-3">
+                    <p class="card-title pb-0 mb-1">package details</p>
+                    <span class="card-text"><b>Insurance: </b>{{x.p_insurance}}</span><br>
+                    <span class="card-text"><b>Fragile: </b>{{x.p_fragile}}</span><br>
+                    <span class="card-text"><b>Shipment Type.: </b>{{x.p_type}}</span><br>
+                    <p class="card-title pb-0 mb-1">Cost</p>
+                    <span class="card-text"><b>Total: </b>₹&nbsp;{{x.cost}}</span><br>
+                </div>
+                <div class="col-md-3">
+                    <p class="card-title pb-0 mb-1">&nbsp;</p>
+                    <!-- <span class="card-text"><b>length(in cm): </b>{{x.p_length}}</span><br>
+                    <span class="card-text"><b>width(in cm): </b>{{x.p_width}}</span><br>
+                    <span class="card-text"><b>height(in cm): </b>{{x.p_height}}</span><br> -->
+                    <span class="card-text"><b>Size: </b>{{x.p_size}}</span><br>
+                    <span class="card-text"><b>Weight(in kg): </b>{{x.p_weight}}</span><br>
+                </div>
+                <div class="col-md-3">
+                    <p class="card-title pb-0 mb-1">Dealer near you</p>
+                    <span class="card-text"><b>name:
+                        </b>{{x.s_dealer_id.firstname}}&nbsp;{{x.s_dealer_id.lastname}}</span><br>
+                    <span class="card-text"><b>phone: </b>{{x.s_dealer_id.phone}}</span>
+                    <p class="card-title pb-0 mb-1">Dealer near recipent</p>
+                    <span class="card-text"><b>name:
+                        </b>{{x.r_dealer_id.firstname}}&nbsp;{{x.r_dealer_id.lastname}}</span><br>
+                    <span class="card-text"><b>phone: </b>{{x.r_dealer_id.phone}}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+            <h4 class="text-center text-danger">No new shipment found !</h4>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% if is_dealer %}
+    
+        {% if upcomingorder %}
+            
+            {% if ucount %}
+                <div class="alert alert-primary" role="alert">
+                    <span>You have a upcoming order sheduled, update if recieved !!</span><a href="#ucorderalert" class="btn btn-warning"><i class="bi bi-arrow-down-circle"></i></a>
+                </div>
+            {% endif %}
+
+        {% endif %}
+            
+        <!-- <button type="button" data-bs-toggle="modal"
+                data-bs-target="#accept_{{o.id}}" class="btn btn-success mx-5 btn-sm">Accept Order</button> -->
+        <!-- Customers Card -->
+        <div class="col-xxl-4 col-xl-12">
+            <div class="card info-card customers-card">
+                <div class="card-body">
+                    <h5 class="card-title">Current Order</h5>
+                    {% if currentorder %}
+                    {% for o in currentorder %}
+                    <div class="modal fade" id="send_{{o.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="/updatestatus/{{o.id}}" method="post">
+                                    {% csrf_token %}
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="orderid" value="{{o.id}}">
+                                        <label for="pickupguy">Select a employee for pickup</label>
+                                        <select class="form-select" required name="pickupguy" id="pickupguy">
+                                            {% for e in employee %}
+                                            <option value="suraj">{{e.firstname}}&nbsp;{{e.lastname}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" name="senddelivery" class="btn btn-primary">Send for
+                                            delivery</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-3">
+                        <h5 class="card-title">Order id# {{o.shipment_id}} |<b class="text-danger"> status:
+                                {{o.shipment_status}} </b>| {{o.date}}
+                            {% if o.shipment_status == "pickup" %}
+                            <a href="/updatestatus/{{o.id}}"><button class="btn btn-primary mx-3">Mark as
+                                    recieved</button>
+                            </a>
+                            {% endif %}
+                            {% if o.shipment_status == "at receiver office" and o.r_dealer_id_id == rqdealer.id %}
+                            <button class="btn btn-warning mx-3" data-bs-toggle="modal"
+                                data-bs-target="#send_{{o.id}}">Send for delivery</button>
+                            {% endif %}
+                            {% if o.shipment_status == "deliver" and o.r_dealer_id_id == rqdealer.id %}
+                            <a href="/updatestatus/{{o.id}}"><button class="btn btn-success mx-3">Mark as
+                                    delivered</button>
+                            </a>
+                            {% endif %}
+                            {% if o.shipment_status == "at sender office" %}
+                            <!-- Button trigger modal -->
+                            <button class="btn btn-info mx-3" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop_mot_{{o.id}}">Mark as onboard</button>
+                            <!-- <a href="/updatestatus/{{o.id}}"><button class="btn btn-info mx-3">Mark as onboard</button>
+                            </a> -->
+                            <!-- Modal -->
+                            <div class="modal fade" id="staticBackdrop_mot_{{o.id}}" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Select Mode of
+                                                Transport</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form action="/dashboard" method="post">
+                                            {% csrf_token %}
+                                        <div class="modal-body">
+                                            <select class="form-select" name="mot" id="mot_{{o.id}}" required>
+                                                <option value="" selected disabled>----</option>
+                                                <option value="Truck">🚛 Truck</option>
+                                                <option value="Train">🚅 Train</option>
+                                                <option value="Plane">✈️ Plane</option>
+                                            </select><br>
+                                            <input type="hidden" name="est" id="est_{{o.id}}">
+                                            <input type="hidden" name="orderid" id="oid" value="{{o.id}}">
+                                            <h5>Delivery Details:</h5>
+                                            <p class="display-10">Dealer name:
+                                                {{o.r_dealer_id.firstname}}&nbsp;{{o.r_dealer_id.lastname}}</p>
+                                            <p class="display-10">Address:
+                                                {{o.r_dealer_id.add_line_1}}&nbsp;{{o.r_dealer_id.add_line_2}}<br>{{o.r_dealer_id.city}}&nbsp;{{o.r_dealer_id.pincode}}&nbsp;{{o.r_dealer_id.country}}
+                                            </p>
+                                            <p class="display-10">Email: {{o.r_dealer_id.email}}</p>
+                                            <p class="display-10">Phone: {{o.r_dealer_id.phone}}</p>
+                                            <h5>Distance: {{o.distance}}&nbsp;km</h5>
+                                            <h5>Estimated time: <b id="estval_{{o.id}}"></b>&nbsp;Hrs</h5>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" name="mode" class="btn btn-primary">Send package</button>
+                                        </div>
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </h5>
+                        <div class="row">
+                            <div class="align-items-center col-md-7">
+                                <!-- <span><b>employee assigned: </b></span><br> -->
+                                <span><b>delivery location:</b>
+                                    {{o.n_recipent_add}}&nbsp;{{o.n_recipent_zip}}&nbsp;{{o.n_recipent_city}}&nbsp;{{o.n_recipent_country}}&nbsp;</span><br>
+                                <span><b>Phone: </b>{{o.n_recipent_ph_no}}</span>
+                            </div>
+                            <div class="col-md-5 row">
+                                <div class="col-md-5"><span><b>weigth: </b>{{o.p_weight}}</span><br>
+                                    <!-- <span><b>height: </b>{{o.p_height}}</span><br> -->
+                                    <!-- <span><b>length: </b>{{o.p_length}}</span><br> -->
+                                    <span><b>Size: </b>{{o.p_size}}</span><br>
+                                </div>
+                                <div class="col-md-7"><span><b>Shipment type: </b>{{o.p_type}}</span><br>
+                                    <!-- <span><b>fragile: </b>{{o.p_fragile}}</span><br> -->
+                                    <span><b>insurance: </b>{{o.p_insurance}}</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        var select_{{o.id}} = document.getElementById('mot_{{o.id}}');
+                        var div_{{o.id}} = document.getElementById('estval_{{o.id}}');
+                        var est_{{o.id}} = document.querySelector('#est_{{o.id}}');
+                        speed = {
+                            "Truck": 60,
+                            "Train": 75,
+                            "Plane":300
+                        }
+                        // console.log("{{distance}}")
+                        var distance_{{o.id}} ={{o.distance}}
+                        // window.onload=()=>{
+                        //     // console.log(select_{{o.id}})
+                        //     div_{{o.id}}.textContent = parseInt(distance_{{o.id}}/speed['Truck'])
+                        //     est_{{o.id}}.value= parseInt(distance_{{o.id}}/speed['Truck'])
+                        // }
+                        select_{{o.id}}.addEventListener('change', (event) => {
+                            // Get the selected option value
+                            const selectedOption = event.target.value;
+                            // Set the div content to the selected option value
+                            time = parseInt(distance_{{o.id}}/speed[selectedOption])
+                            div_{{o.id}}.textContent = time
+                            est_{{o.id}}.value= time
+                        });
+                    </script>
+                    {% endfor %}
+                    {% else %}
+                    <div class="card text-danger p-5 text-center">
+                        <h3>No order for now</h3>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div><!-- End Customers Card -->
+        <!-- Customers Card -->
+        <div class="col-xxl-4 col-xl-12">
+            <div class="card info-card customers-card">
+                <div class="card-body" id="ucorderalert">
+                    <h5 class="card-title">Upcoming Orders <span>| This week</span></h5>
+                    {% if upcomingorder %}
+                    {% for o in upcomingorder %}
+                    <div class="card p-3">
+                        <h5 class="card-title">Order id# {{o.shipment_id}} |<b class="text-danger"> status:
+                                {{o.shipment_status}} </b>| {{o.date}}
+                            {% if o.shipment_status == "onboard" %}
+                            <a href="/updatestatus/{{o.id}}"><button class="btn btn-primary mx-3">Mark as
+                                    recieved</button>
+                            </a>
+                            {% endif %}
+                        </h5>
+                        <div class="row">
+                            <div class="align-items-center col-md-7">
+                                <!-- <span><b>employee assigned: </b></span><br> -->
+                                <span><b>delivery location:</b>
+                                    {{o.n_recipent_add}}&nbsp;{{o.n_recipent_zip}}&nbsp;{{o.n_recipent_city}}&nbsp;{{o.n_recipent_country}}&nbsp;</span><br>
+                                <span><b>Phone: </b>{{o.n_recipent_ph_no}}</span>
+                            </div>
+                            <div class="col-md-5 row">
+                                <div class="col-md-5"><span><b>weigth: </b>{{o.p_weight}}</span><br>
+                                    <span><b>Size: </b>{{o.p_size}}</span><br>
+                                    <!-- <span><b>length: </b>{{o.p_length}}</span><br>
+                                    <span><b>width: </b>{{o.p_width}}</span><br> -->
+                                </div>
+                                <div class="col-md-7"><span><b>Shipment type: </b>{{o.p_type}}</span><br>
+                                    <!-- <span><b>fragile: </b>{{o.p_fragile}}</span><br> -->
+                                    <span><b>insurance: </b>{{o.p_insurance}}</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="card text-danger p-5 text-center">
+                        <h3>No order for now</h3>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div><!-- End Customers Card -->
+
+        <!-- Change Password Form -->
+        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Reset Password
+        </button> -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">First Login</h1>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="/profile">
+                            {% csrf_token %}
+                            <input type="hidden" name="formname" value="changepsw">
+                            <div class="row mb-3">
+                                <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current
+                                    Password</label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input name="password" type="password" class="form-control" id="currentPassword">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New
+                                    Password</label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input name="newpassword" type="password" class="form-control" id="newPassword">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New
+                                    Password</label>
+                                <div class="col-md-8 col-lg-9">
+                                    <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Change Password</button>
+                            </div>
+                        </form><!-- End Change Password Form -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if is_owner %}
+        <div class="row">
+            <!-- Revenue Card -->
+            <div class="col-xxl-4 col-md-6">
+                <div class="card info-card revenue-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Revenue <span>| This Month</span></h5>
+
+                        <div class="d-flex align-items-center">
+                            <div
+                                class="card-icon bg-secondary-subtle py-3 px-4 rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <div class="ps-3">
+                                <h6>Total:</h6>
+                                <h6>$ {{cost}}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- End Revenue Card -->
+            <!-- customer Card -->
+            <div class="col-xxl-4 col-md-6">
+                <div class="card info-card revenue-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Customers <span>| This Month</span></h5>
+
+                        <div class="d-flex align-items-center">
+                            <div
+                                class="card-icon bg-secondary-subtle py-3 px-4 rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="ps-3">
+                                <h6>Total:</h6>
+                                <h6>{{user_count}}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- End customers Card -->
+            <!-- dealer Card -->
+            <div class="col-xxl-4 col-md-6">
+                <div class="card info-card revenue-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Dealers <span>| This Month</span></h5>
+
+                        <div class="d-flex align-items-center">
+                            <div
+                                class="card-icon bg-secondary-subtle py-3 px-4 rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="ps-3">
+                                <h6>Total:</h6>
+                                <h6>{{dealer_count}}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- End customers Card -->
+        </div>
+        {% endif %}
+
+        <!-- End timeline  -->
+    </div>
+</main>
+
+{% endblock main %}

@@ -1,0 +1,297 @@
+{% extends 'baseDash.html' %}
+
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Profile</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item">Users</li>
+                <li class="breadcrumb-item active">Profile</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section profile pt-0">
+        <div class="row">
+            <div class="col-xl-4">
+
+                <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                        {% if userp.picture %}
+                        <img src="{{userp.picture}}" alt="Profile" class="rounded-circle" id="profile-img-upload">
+                        {% else %}
+                        <img src="{% static 'img/person-circle.svg' %}" alt="Profile" class="rounded-circle"
+                            id="profile-img-upload">
+                        {% endif %}
+                        <!-- <img src="{% static 'img/person-circle.svg' %}" alt="Profile" class="rounded-circle"> -->
+                        <h2>{{user.username}}</h2>
+                        {% for group in request.user.groups.all %}
+                        <h3>{{group.name}}</h3>
+                        {% endfor %}
+                        <!-- <div class="social-links mt-2">
+                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+              </div> -->
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-8">
+
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <!-- Bordered Tabs -->
+                        <ul class="nav nav-tabs nav-tabs-bordered">
+
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab"
+                                    data-bs-target="#profile-overview">Overview</button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit
+                                    Profile</button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab"
+                                    data-bs-target="#profile-change-password">Change Password</button>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content pt-2">
+                            <!-- Profile Overview -->
+                            <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                                <h5 class="card-title">Profile Details</h5>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
+                                    <div class="col-lg-9 col-md-8">{{user.first_name | default:"Unknown"}}
+                                        {{user.last_name}}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Date Joined:</div>
+                                    <div class="col-lg-9 col-md-8">{{user.date_joined}}</div>
+                                </div>
+
+                                <!-- <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">role</div>
+                                    {% for group in request.user.groups.all %}
+                                    <div class="col-lg-9 col-md-8">{{group.name}}</div>
+                                    {% endfor %}
+                                </div> -->
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Country</div>
+                                    <div class="col-lg-9 col-md-8">{{userp.country| default:"Unknown"}}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Address</div>
+                                    <div class="col-lg-9 col-md-8">{{userp.address | default:"Not set"}}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Phone</div>
+                                    <div class="col-lg-9 col-md-8">{{userp.ph_no | default:"Not set"}}</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Email</div>
+                                    <div class="col-lg-9 col-md-8">{{user.email}}</div>
+                                </div>
+
+                                <!-- End Profile Overview -->
+                            </div>
+                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+
+                                <!-- Profile Edit Form -->
+                                <form action="/profile" method="post" id="updateprofileform"
+                                    enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <!-- <input type="hidden" name="formname" value="edit_profile"> -->
+                                    <div class="row mb-3">
+                                        <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile
+                                            Image</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <!-- <img src="{{image_url}}" alt="Profile"> -->
+                                            <div class="pt-2">
+                                                <!-- {{imgform.as_p}} -->
+                                                <!-- {{form.as_p}} -->
+                                                <input type="file" accept="image/*" name="pimage" id="pimage"
+                                                    class="btn btn-primary btn-sm" onchange="previewImage(event)">
+                                                <!-- <a href="#" class="btn btn-primary btn-sm"
+                                                    title="Upload new profile image"><i class="bi bi-upload"></i></a> -->
+                                                <!-- <a href="#" class="btn btn-danger btn-sm"
+                                                    title="Remove my profile image"><i class="bi bi-trash"></i></a> -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="firstname" class="col-md-4 col-lg-3 col-form-label">First
+                                            Name*</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="firstname" type="text" class="form-control" id="firstname"
+                                                value="{{user.first_name}}">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="lastname" class="col-md-4 col-lg-3 col-form-label">last
+                                            Name*</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="lastname" type="text" class="form-control" id="lastname"
+                                                value="{{user.last_name}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country*</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="country" type="text" class="form-control" id="Country"
+                                                value="{{userp.country}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address*</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="address" type="text" class="form-control" id="Address"
+                                                value="{{userp.address}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone*</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="phone" type="number" class="form-control" id="Phone">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email*</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="email" type="email" class="form-control" id="Email"
+                                                value="{{user.email}}">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <!-- <input type="hidden" name="formname"> -->
+                                        <button type="submit" name="edit_profile" class="btn btn-primary">Save
+                                            Changes</button>
+                                    </div>
+                                </form><!-- End Profile Edit Form -->
+
+                            </div>
+
+                            <div class="tab-pane fade pt-3" id="profile-change-password">
+                                <!-- Change Password Form -->
+                                <!-- <form method="post" action="/profile"> -->
+                                <!-- {% csrf_token %} -->
+                                <!-- <input type="hidden" name="formname" value="changepsw"> -->
+                                <!-- <div class="row mb-3">
+                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current
+                                            Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="password" type="password" class="form-control"
+                                                id="currentPassword">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New
+                                            Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="newpassword" type="password" class="form-control"
+                                                id="newPassword">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New
+                                            Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="renewpassword" type="password" class="form-control"
+                                                id="renewPassword">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" name="changepsw" class="btn btn-primary">Change Password</button>
+                                    </div>
+                                </form> -->
+                                <!-- End Change Password Form --> 
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="row g-3 align-items-center p-1">
+                                        <div class="col-md-4">
+                                          <label for="inputPassword6" class="col-form-label">Password</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <input type="password" name="current_password" id="inputPassword6" class="form-control" aria-describedby="passwordHelpInline">
+                                        </div>
+                                      </div>
+                                      <div class="row g-3 align-items-center p-1">
+                                        <div class="col-md-4">
+                                          <label for="inputPassword6" class="col-form-label">New Password</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <input type="password" id="inputPassword6" name="new_password" class="form-control" aria-describedby="passwordHelpInline">
+                                        </div>
+                                        <div class="col-md-4">
+                                          <span id="passwordHelpInline" class="form-text">
+                                            Must be 8-20 characters long.
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div class="row g-3 align-items-center p-1">
+                                        <div class="col-md-4">
+                                          <label for="inputPassword6" class="col-form-label">Confirm New Password</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                          <input type="password" id="inputPassword6" class="form-control" aria-describedby="passwordHelpInline">
+                                        </div>
+                                      </div>
+                                    <button type="submit" class="btn btn-primary" name="changepsw">Save changes</button>
+                                </form>
+                            </div>
+
+                        </div><!-- End Bordered Tabs -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+<script>
+    // setTimeout(() => {
+    //     window.location.reload()
+    // }, 1000);
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    function previewImage(event) {
+        var input = event.target;
+        var image = document.getElementById('profile-img-upload');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                image.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock main %}

@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block main %}
+<!-- ======= Hero Section ======= -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div class="toast align-items-center text-bg-danger" id="myToast" role="alert" aria-live="assertive"
+        aria-atomic="true" data-aos="fade-left" data-bs-autohide="false">
+        <div class="d-flex">
+            <div class="toast-body">
+                No dealer found in this location.
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<section id="hero" class="hero d-flex align-items-center">
+    <div class="container">
+        <div class="row gy-4 d-flex justify-content-between">
+            <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                <!-- <div class="alert alert-primary" role="alert">
+                    A simple primary alert—check it out!
+                  </div> -->
+                <h2 data-aos="fade-up" class="tagline">Your Lightning Fast Delivery Partner</h2>
+                <div class="p-5 text-center text-light" data-aos="fade-up" data-aos-delay="50">
+                    <!-- write the button toggle css here -->
+                    <div class="index-btn btn-group">
+                        <button class="btn btn-outline-light" id="zip-btn"><i class="bi bi-pin-map"></i><br><span>locate
+                                Dealers</span></button>
+                        <button class="btn btn-outline-light btn-active" id="tracker-btn"><i
+                                class="bi bi-box-seam"></i><br><span>Track
+                                package</span></button>
+                        <a href="/makeShipment">
+                            <button class="btn btn-outline-light"><i class="bi bi-search"></i><br><span>Make
+                                    Shipment</span></button>
+                        </a>
+                    </div>
+                </div>
+                <form action="#track" method="post" class="form-search display-flex align-items-stretch mb-3"
+                    id="tracker" data-aos="fade-up" data-aos-delay="200">
+                    {% csrf_token %}
+                    <input type="number" name="trackid" class="form-control" placeholder="Tracker Id">
+                    <button type="submit" name="trackPackage" class="btn btn-primary">Search</button>
+                </form>
+                <form action="#actions" method="post" class="form-search align-items-stretch mb-3 hidden" id="zip"
+                    data-aos="fade-up" data-aos-delay="200">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" name="zipcity" placeholder="Pincode or City">
+                    <button type="submit" name="zipcode" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+
+            <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+                <img src="{% static 'assets/img/fastbox delivery.png' %}" class="img-fluid mb-3 mb-lg-0" alt="">
+            </div>
+
+        </div>
+    </div>
+</section><!-- End Hero Section -->
+
+{% if zipcodes %}
+<section class="bg-secondary-subtle pt-5" id="actions" style="height: 80vh;">
+    <div class="card container my-5">
+        <div class="list-group">
+            {% for x in zipcodes %}
+            <div class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{x.firstname}}&nbsp;{{x.lastname}}</h5>
+                </div>
+                <p class="mb-1">
+                    {{x.add_line_1}},&nbsp;{{x.add_line_2}},&nbsp;<strong>{{x.pincode}},&nbsp;{{x.city}},&nbsp;{{x.country}}</strong>
+                </p>
+                <small class="text-muted"><b>Phone:&nbsp;</b>{{x.phone}}&nbsp;<b>E-mail:&nbsp;</b>{{x.email}}</small>
+            </div>
+            {% empty %}
+            <!-- Bootstrap Toast -->
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var myToast = document.getElementById('myToast');
+                    var toast = new bootstrap.Toast(myToast);
+                    toast.show();
+                });
+            </script>
+            <div class="card" id="actions">
+                <h5 class="text-danger m-5 text-center"></h5>
+            </div>
+            <div class="card">
+                <h5 class="text-danger m-5 text-center">No Dealer at this location found !!!</h5>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% elif nozipcodes %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var myToast = document.getElementById('myToast');
+        var toast = new bootstrap.Toast(myToast);
+        toast.show();
+    });
+</script>
+{% endif %}
+{% if trackPackage %}
+{% if errmsg %}
+<div class="card" id="track">
+    <h5 class="text-danger m-5 text-center"></h5>
+</div>
+<div class="card">
+    <h5 class="text-danger m-5 text-center">Invalid tracker id</h5>
+</div>
+{% else %}
+<div class="container-fluid bg-secondary py-5" id="track"></div>
+<div class="card bg-info">
+    <h3 class="text-center text-success py-3">Track Shipment</h3>
+    <div class="card mt-3">
+    </div>
+    <div class="card mt-2">
+    </div>
+    <div class="progress-stacked mx-5 my-3">
+        <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0"
+            aria-valuemax="100" style="width: {{status}}%">
+            <div class="progress-bar progress-bar-striped bg-danger">
+            </div>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0"
+            aria-valuemax="100" style="width: 5%">
+            <div class="progress-bar progress-bar-striped bg-success">
+                <img class="animalimg" src="{% static 'img/guy.png' %}" alt="guy">
+            </div>
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col-md-2 text-center">My place</div>
+        <div class="col-md-2 text-end">Dealer1</div>
+        <div class="col-md-1"></div>
+        <div class="col-md-2 text-center">On Board</div>
+        <div class="col-md-1"></div>
+        <div class="col-md-2">Dealer2</div>
+        <div class="col-md-2 text-center">Recipent</div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+<main id="main">
+    <!-- ======= Stats Counter Section ======= -->
+    <section id="stats-counter" class="stats-counter pt-0">
+        <div class="container" data-aos="fade-up">
+
+            <div class="row gy-4 mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 col-md-4">
+                        <div class="stats-item text-center w-100 h-100">
+                            <span data-purecounter-start="0" data-purecounter-end="{{user_count}}"
+                                data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Happy Customers</p>
+                        </div>
+                    </div><!-- End Stats Item -->
+
+                    <div class="col-lg-3 col-md-4">
+                        <div class="stats-item text-center w-100 h-100">
+                            <span data-purecounter-start="0" data-purecounter-end="{{dealer_count}}"
+                                data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Dealers</p>
+                        </div>
+                    </div><!-- End Stats Item -->
+
+                    <div class="col-lg-3 col-md-4">
+                        <div class="stats-item text-center w-100 h-100">
+                            <span data-purecounter-start="0" data-purecounter-end="143" data-purecounter-duration="1"
+                                class="purecounter"></span>
+                            <p>Hours Of Support</p>
+                        </div>
+                    </div><!-- End Stats Item -->
+                </div>
+
+                <!-- =====2nd row======= -->
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stats-item text-center w-100 h-100">
+                            <span data-purecounter-start="0" data-purecounter-end="{{worker_count}}"
+                                data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Workers</p>
+                        </div>
+                    </div><!-- End Stats Item -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stats-item text-center w-100 h-100">
+                            <span data-purecounter-start="0" data-purecounter-end="{{shipment_count}}"
+                                data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Delivery's</p>
+                        </div>
+                    </div><!-- End Stats Item -->
+                </div>
+
+            </div>
+
+        </div>
+    </section><!-- End Stats Counter Section -->
+
+    <!-- ======= Services Section ======= -->
+    <section id="service" class="services pt-0">
+        <div class="container" data-aos="fade-up">
+
+            <div class="section-header">
+                <span>Our Services</span>
+                <h2>Our Services</h2>
+
+            </div>
+
+            <div class="row gy-4">
+
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="{% static 'assets/img/storage-service.jpg' %}" alt="" class="img-fluid">
+                        </div>
+                        <h3><a href="{% url 'service' %}" class="stretched-link">Storage</a></h3>
+                        <p>And those in whom never. Either he is averse to bearing it, but because it is pleasure
+                            to be repelled
+                            therefore he hates his duties at times</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="{% static 'assets/img/logistics-service.jpg' %}" alt="" class="img-fluid">
+                        </div>
+                        <h3><a href="{% url 'service' %}" class="stretched-link">Logistics</a></h3>
+                        <p>The harsher ones provide that the pain we accuse is matched by pain for those who dare to do
+                            so and fall right
+                            trouble
+                            We are blinded by grief itself</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="{% static 'assets/img/cargo-service.jpg' %}" alt="" class="img-fluid">
+                        </div>
+                        <h3><a href="{% url 'service' %}" class="stretched-link">Cargo</a></h3>
+                        <p>It is said how and in the same way, because the architect must reject them either by reason
+                            or by himself, and it is painful
+                            greediness
+                            or trouble as well as nothing</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="{% static 'assets/img/trucking-service.jpg' %}" alt="" class="img-fluid">
+                        </div>
+                        <h3><a href="{% url 'service' %}" class="stretched-link">Trucking</a></h3>
+                        <p>It is said how and in the same way, because the architect must reject them either by reason
+                            or by himself, and it is painful
+                            greediness
+                            or trouble as well as nothing</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="{% static 'assets/img/packaging-service.jpg' %}" alt="" class="img-fluid">
+                        </div>
+                        <h3><a href="{% url 'service' %}" class="stretched-link">Packaging</a></h3>
+                        <p>This results in the selection of any of the present methods to make the most worthy or when
+                            they are on
+                            elders
+                            happy results great pleasures</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="{% static 'assets/img/warehousing-service.jpg' %}" alt="" class="img-fluid">
+                        </div>
+                        <h3><a href="{% url 'service' %}" class="stretched-link">Warehousing</a></h3>
+                        <p>What must be assumed not to be blinded by trouble. In either of them, but the birth of Eata
+                            in truth. From the ways
+                            anyone or
+                            our whence and who is, not where there is none</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+            </div>
+
+        </div>
+    </section><!-- End Services Section -->
+
+    <!-- ==== Mobile App ===== -->
+    <section id="app" class="app" data-aos="fade-up" data-aos-delay="100">
+        <div class="container">
+            <div class="row justify-content-end">
+                <div class="col-md-6 text-center text-danger">
+                    <h1 class="py-5 display-3 fw-bolder">Download the FastBox Mobile App</h1>
+                    <div class="buttons">
+                        <a href="https://play.google.com/store/apps"><button
+                                class="playstore btn btn-dark p-0 m-0"></button></a>
+                        <a href="https://www.apple.com/in/app-store/"><button
+                                class="appstore btn btn-dark p-0 m-0"></button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ==== end Mobile App ===== -->
+</main>
+<script src="{% static '/js/index.js' %}"></script>
+{% endblock main %}

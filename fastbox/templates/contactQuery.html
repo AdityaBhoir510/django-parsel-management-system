@@ -1,0 +1,61 @@
+{% extends 'baseDash.html' %}
+
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Contact Querys</h1>
+    </div><!-- End Page Title -->
+    {% if msg %}
+    <div class="alert alert-success" role="alert">
+        {{msg}}
+    </div>
+    {% endif %}
+    {% if errmsg %}
+    <div class="alert alert-danger" role="alert">
+        {{errmsg}}
+    </div>
+    {% endif %}
+    {% if request %}
+    <!-- Scrollable modal -->
+    <div class="card">
+        <div class="card-body">
+            <!-- Table with hoverable rows -->
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Message</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">time</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                {% for x in querys reversed %}
+                <tbody id="request_{{x.id}}">
+                    <tr class="dreq" data-bs-toggle="collapse">
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{x.name}}</td>
+                        <td>{{x.email}}</td>
+                        <td>{{x.subject}}</td>
+                        <td>{{x.message}}</td>
+                        <td>{{x.date}}</td>
+                        <td>{{x.time}}</td>
+                        <td><a href="mailto:{{x.email}}" class="text-white btn btn-primary"><i class="bi bi-envelope-at"></i></a></td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+            <!-- End Table with hoverable rows -->
+        </div>
+    </div>
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+        <h4 class="text-center text-danger">No Request Found !</h4>
+    </div>
+    {% endif %}
+</main>
+{% endblock main %}
+    

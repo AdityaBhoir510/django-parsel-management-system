@@ -1,0 +1,263 @@
+{% extends 'baseDash.html' %}
+
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+
+    {% if msg %}
+    <div class="alert alert-info" role="alert">
+        {{msg}}
+    </div>
+    {% endif %}
+
+    <div class="pagetitle">
+        <h1>Make Shipment</h1>
+    </div><!-- End Page Title -->
+    <div class="card bg-success-subtle row p-3">
+        <form method="POST" action="#locatedealer" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row p-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="senderName">Sender Name:</label>
+                        <input type="text" class="form-control" id="senderName" name="senderName"
+                            value="{{user.first_name}} {{user.last_name}}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senderAddress">Sender Address:</label>
+                        <input type="text" class="form-control m-1" placeholder="Address Line" id="senderAddress_add"
+                            name="senderAddress_add" required>
+                        <input type="number" class="form-control m-1" placeholder="pin code" id="senderAddress_zip"
+                            name="senderAddress_zip" required>
+                        <input type="text" class="form-control m-1" placeholder="city" id="senderAddress_city"
+                            name="senderAddress_city" required>
+                        <input type="text" class="form-control m-1" placeholder="country" id="senderAddress_country"
+                            name="senderAddress_country" required>
+                        <input type="number" class="form-control m-1" placeholder="Mobile No." id="senderAddress_phone"
+                            name="senderAddress_phone" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="recipientName">Recipient Name:</label>
+                        <input type="text" class="form-control" id="recipientName" name="recipientName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientAddress">Recipient Address:</label>
+                        <input type="text" class="form-control m-1" id="recipientAddress_add"
+                            name="recipientAddress_add" placeholder="Address Line" required>
+                        <input type="number" class="form-control m-1" id="recipientAddress_zip"
+                            name="recipientAddress_zip" placeholder="pin code" required>
+                        <input type="text" class="form-control m-1" id="recipientAddress_city"
+                            name="recipientAddress_city" placeholder="city" required>
+                        <input type="text" class="form-control m-1" id="recipientAddress_country"
+                            name="recipientAddress_country" placeholder="country" required>
+                        <input type="number" class="form-control m-1" id="recipientAddress_phone"
+                            name="recipientAddress_phone" placeholder="Mobile no." required>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-3">
+                <!-- <div class="col-md-4"> -->
+                <div class="form-group col-md-3">
+                    <label for="shipmentType">Shipment Type :</label>
+                    <select class="form-control" id="shipmentType" name="shipmentType">
+                        <option value="Fragile">Fragile</option>
+                        <option value="Non-Fragile">Non-Fragile</option>
+                        <option value="Perishable">Perishable</option>
+                        <option value="Non-Perishable">Non-Perishable</option>
+                        <option value="Hazardous">Hazardous</option>
+                        <option value="Non-Hazardous">Non-Hazardous</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="insurance">Insurance:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="insurance" id="insuranceYes" value="Yes"
+                            required>
+                        <label class="form-check-label" for="insuranceYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="insurance" id="insuranceNo" value="No"
+                            required>
+                        <label class="form-check-label" for="insuranceNo">No</label>
+                    </div>
+                </div>
+                <!-- <div class="form-group col-md-3">
+                    <label for="fragile">Fragile:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="fragile" id="fragileYes" value="Yes"
+                            required>
+                        <label class="form-check-label" for="fragileYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="fragile" id="fragileNo" value="No" required>
+                        <label class="form-check-label" for="fragileNo">No</label>
+                    </div>
+                </div> -->
+                <div class="col-md-3">
+                    <img src="{% static 'img/pakage guy.jpeg' %}" alt="pakage guy" class="pakageguy">
+                </div>
+            </div>
+
+            <div class="row p-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="packageWeight">Package Weight (in KG):</label>
+                        <input required type="number" class="form-control" id="packageWeight" name="packageWeight">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="packagesize">Package size:</label>
+                        <!-- <input required type="number" class="form-control" id="packagesize" name="packagesize"> -->
+                        <select class="form-select" name="packagesize" id="packagesize" required>
+                            <option value="" selected disabled>----</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="x-large">X-large</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="packageWidth">Package Width (in cm):</label>
+                        <input required type="number" class="form-control" id="packageWidth" name="packageWidth">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packageLength">Package Length (in cm):</label>
+                        <input required type="number" class="form-control" id="packageLength" name="packageLength">
+                    </div>
+                </div> -->
+            </div>
+    </div>
+    <div class="container d-flex justify-content-center">
+        <button type="submit" name="shipment_info" class="btn btn-primary">Make Shipment</button>
+    </div>
+    </form>
+    </div>
+    {% if locatedealer %}
+    <form action="#payment" method="post">
+        {% csrf_token %}
+        <section class="row bg-success-subtle mt-5" id="locatedealer">
+            <div class="col-md-6"><!-- List group with Advanced Contents -->
+                <h5 class="card-title mt-5">Dealers in your location</h5>
+                <div class="list-group overflow-y-scroll" style="height: 70dvh;">
+                    {% for x in locatedealer.senderdealerloc %}
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{x.firstname}}&nbsp;{{x.lastname}}</h5>
+                            <input type="radio" value="{{x.id}}" class="btn-check" name="dealeratsender"
+                                id="success-senderD-{{x.id}}" autocomplete="off" required>
+                            <label class="btn btn-outline-success" for="success-senderD-{{x.id}}">Select</label>
+                        </div>
+                        <p class="mb-1">
+                            {{x.add_line_1}},&nbsp;{{x.add_line_2}},&nbsp;<strong>{{x.pincode}},&nbsp;{{x.city}},&nbsp;{{x.country}}</strong>
+                        </p>
+                        <small
+                            class="text-muted"><b>Phone:&nbsp;</b>{{x.phone}}&nbsp;<b>E-mail:&nbsp;</b>{{x.email}}</small>
+                    </div>
+                    {% endfor %}
+                </div><!-- End List group Advanced Content -->
+            </div>
+            <div class="col-md-6"><!-- List group with Advanced Contents -->
+                <h5 class="card-title mt-5">Dealers in recipient location</h5>
+                <div class="list-group overflow-y-scroll" style="height: 70dvh;">
+                    {% for r in locatedealer.recipentdealerloc %}
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{r.firstname}}&nbsp;{{r.lastname}}</h5>
+                            <input type="radio" value="{{r.id}}" class="btn-check" name="dealeratrecipent"
+                                id="success-recipentD-{{r.id}}" autocomplete="off" required>
+                            <label class="btn btn-outline-success" for="success-recipentD-{{r.id}}">Select</label>
+                        </div>
+                        <p class="mb-1">
+                            {{r.add_line_1}},&nbsp;{{r.add_line_2}},&nbsp;<strong>{{r.pincode}},&nbsp;{{r.city}},&nbsp;{{r.country}}</strong>
+                        </p>
+                        <small
+                            class="text-muted"><b>Phone:&nbsp;</b>{{r.phone}}&nbsp;<b>E-mail:&nbsp;</b>{{r.email}}</small>
+                    </div>
+                    {% endfor %}
+                </div><!-- End List group Advanced Content -->
+            </div>
+        </section>
+        <div class="container d-flex justify-content-center mt-3">
+            <button type="submit" name="select_dealer" class="btn btn-success">proceed for payment</button>
+        </div>
+    </form>
+    {% endif %}
+    {% if payment %}
+    <section id="payment">
+        <form action="/makeShipment" method="post">
+            {% csrf_token %}
+            <div class="card mt-5">
+                <div class="card-body row">
+                    <h5 class="card-title">Confirm Details</h5>
+                    <div class="col-md-4">
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div><b>Distance: </b>{{distance}} Km.</div>
+                        <div><b>Weight: </b>{{weight}} Kg.</div>
+                        <!-- <div><b>Dimensions(in Cubic centimeter): </b>{{packageDimension}} cm<sup>3</sup></div> -->
+                        <div><b>Size: </b>{{packageSize}}</div>
+                        <div>Price per Km:&nbsp;₹&nbsp;{{pricekm}}</div>
+                        <div>Additional cost:&nbsp;₹&nbsp;{{addprice}}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="card-text">The price for your shipment is been calculated using the distance between
+                            your
+                            senders and receiver location + the form factor of the package.</p>
+                    </div>
+                    <div class="d-flex">
+                        <button id="rzp-button1" class="btn btn-success m-2 text-center">Pay now</button>
+                        <!-- <a href="/paymentgateway" class="btn btn-success m-2 text-center">Pay Now</a> -->
+                        <a href="#" class="btn btn-warning m-2"><button class="btn" type="submit" name="paylater">Pay
+                                when package
+                                has been collected</button></a>
+                        <h5 class="card-title">Total: ₹{{amount}}</h5>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+    {% endif %}
+    <!-- <button id="rzp-button1">Pay with Razorpay</button> -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            "key": "rzp_test_rOgiQUix1apLnN", // Enter the Key ID generated from the Dashboard
+            "amount": "{{data.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "FastBox Corp",
+            "description": "Test Transaction",
+            "image": "https://example.com/your_logo",
+            "order_id": "{{data.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "callback_url": "paymentgateway",
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        document.getElementById('rzp-button1').onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
+</main>
+{% endblock main %}

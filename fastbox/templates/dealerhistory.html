@@ -1,0 +1,83 @@
+{% extends 'baseDash.html' %}
+
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Order History</h1>
+    </div><!-- End Page Title -->
+    {% if msg %}
+    <div class="alert alert-success" role="alert">
+        {{msg}}
+    </div>
+    {% endif %}
+    {% if errmsg %}
+    <div class="alert alert-danger" role="alert">
+        {{errmsg}}
+    </div>
+    {% endif %}
+    {% if completeorder %}
+    {% for o in completeorder %}
+    <div class="modal fade" id="accept_{{o.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="orderid" value="{{o.id}}">
+                        <label for="pickupguy">Select a employee for pickup</label>
+                        <select class="form-select" name="pickupguy" id="pickupguy">
+                            {% for e in employee %}
+                            <option value="suraj">{{e.firstname}}&nbsp;{{e.lastname}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="acceptorder" class="btn btn-primary">Accept order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <h5 class="card-header">Order id# <span>{{o.shipment_id}}</span></h5>
+        <div class="row">
+            <div class="card-body col-md-6">
+                <span class="card-title">Pickup details</span><br>
+                <span class="card-text"><b>address: </b>{{o.n_sender_add}}</span><br>
+                <span class="card-text"><b>pincode: </b>{{o.n_sender_zip}}</span>
+                <span class="card-text"><b>city: </b>{{o.n_sender_city}}</span>
+                <span class="card-text"><b>country: </b>{{o.n_sender_country}}</span>
+            </div>
+            <div class="card-body col-md-6">
+                <span class="card-title">Delivery details</span><br>
+                <span class="card-text"><b>address: </b>{{o.n_recipent_add}}</span><br>
+                <span class="card-text"><b>pincode: </b>{{o.n_recipent_zip}}</span>
+                <span class="card-text"><b>city: </b>{{o.n_recipent_city}}</span>
+                <span class="card-text"><b>country: </b>{{o.n_recipent_country}}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="card text-danger p-5 text-center">
+        <h3>No order for now</h3>
+    </div>
+    {% endif %}
+</main>
+<script>
+    dreq = document.querySelectorAll(".dreq")
+    console.log(dreq)
+    // for (var i = 0; i < dreq.length; i++) {
+    //     dreq[i].addEventListener('click', () => {
+    //         console.log(dreq[0])
+    //     })
+    // }
+</script>
+{% endblock main %}
+    

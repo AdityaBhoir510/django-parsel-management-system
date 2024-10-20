@@ -1,0 +1,155 @@
+{% extends 'baseDash.html' %}
+
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Dealer Requests</h1>
+    </div><!-- End Page Title -->
+    {% if msg %}
+    <div class="alert alert-success" role="alert">
+        {{msg}}
+    </div>
+    {% endif %}
+    {% if errmsg %}
+    <div class="alert alert-danger" role="alert">
+        {{errmsg}}
+    </div>
+    {% endif %}
+    {% if request %}
+    <div class="card">
+        <div class="card-body">
+            <!-- Table with hoverable rows -->
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Postal Code</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">ph_no</th>
+                        <th scope="col">email</th>
+                        <th scope="col">Date</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                {% for x in request %}
+                <tbody id="request_{{x.id}}">
+                    <tr class="dreq" data-bs-toggle="collapse">
+                        <th scope="row">
+                            {{forloop.counter}}
+                            <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapse_{{x.id}}"
+                                role="button" aria-expanded="false" aria-controls="collapseExample"><i
+                                    class="bi bi-info-circle-fill"></i></a>
+                        </th>
+                        <td>{{x.firstname}}&nbsp;{{x.lastname}}</td>
+                        <td>{{x.city}}</td>
+                        <td>{{x.postalcode}}</td>
+                        <td>{{x.country}}</td>
+                        <td>{{x.ph_no}}</td>
+                        <td>{{x.email}}</td>
+                        <td>{{x.date}}</td>
+                        <td><button data-bs-toggle="modal" data-bs-target="#exampleModal_{{x.id}}"
+                                class="btn btn-success rounded-pill">ADD</button></td>
+                        <td><button data-bs-toggle="modal" data-bs-target="#exampleModalDelete_{{x.id}}"
+                                class="btn btn-danger rounded-pill">DELETE</button></td>
+                        <!-- <td><a href="/delete/{{x.id}}" class="text-white"></a><button class="btn btn-danger rounded-pill" id="del">DELETE</button></a></td> -->
+                    </tr>
+                    <tr class="reqdetails collapse" id="collapse_{{x.id}}">
+                        <td></td>
+                        <td colspan="9">
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                    <label class="form-text">Warehouse details: </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div><label class="form-text">Comapny name:&nbsp;</label>{{x.companyname}}</div>
+                                    <div><a href="mailto:{{x.email}}" class="btn btn-success text-white">Get in
+                                            touch</a></div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div><label class="form-text">Add line 1:&nbsp;</label>{{x.add_line_1}}</div>
+                                    <div><label class="form-text">Add line 2:&nbsp;</label>{{x.add_line_2}}</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div><label class="form-text">tenure:&nbsp;</label>{{x.wh_tenure}}</div>
+                                    <div><label class="form-text">area:&nbsp;</label>{{x.wh_area}}</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div><label class="form-text">City:&nbsp;</label>{{x.wh_city}}</div>
+                                    <div><label class="form-text">Country:&nbsp;</label>{{x.wh_country}}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <!-- Modal add-->
+                <div class="modal fade" id="exampleModal_{{x.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Dealer Request</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                The Selected Dealer will be added and given permission of dealers. <br><br>
+                                Username:&nbsp;&nbsp;{{x.firstname}} <br>
+                                password:&nbsp;&nbsp;{{x.firstname}} <br>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a href="/addD/{{x.id}}" class="text-white"><button type="button"
+                                        class="btn btn-success">Add
+                                        Dealer</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Delete-->
+                <div class="modal fade" id="exampleModalDelete_{{x.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Request</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                The Selected Dealer's request will be deleted<br>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a href="/deleteD/{{x.id}}" class="text-white"><button type="button"
+                                        class="btn btn-danger">Delete Request</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </table>
+            <!-- End Table with hoverable rows -->
+        </div>
+    </div>
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+        <h4 class="text-center text-danger">No Request Found !</h4>
+    </div>
+    {% endif %}
+</main>
+<script>
+    dreq = document.querySelectorAll(".dreq")
+    console.log(dreq)
+    // for (var i = 0; i < dreq.length; i++) {
+    //     dreq[i].addEventListener('click', () => {
+    //         console.log(dreq[0])
+    //     })
+    // }
+</script>
+{% endblock main %}

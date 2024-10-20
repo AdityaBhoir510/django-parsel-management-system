@@ -1,0 +1,92 @@
+{% extends 'baseDash.html' %}
+
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Business Querys</h1>
+    </div><!-- End Page Title -->
+    {% if msg %}
+    <div class="alert alert-success" role="alert">
+        {{msg}}
+    </div>
+    {% endif %}
+    {% if errmsg %}
+    <div class="alert alert-danger" role="alert">
+        {{errmsg}}
+    </div>
+    {% endif %}
+    {% if request %}
+    <!-- Scrollable modal -->
+    <div class="card">
+        <div class="card-body">
+            <!-- Table with hoverable rows -->
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Company Name</th>
+                        <th scope="col">Contact Person</th>
+                        <th scope="col">ph_no</th>
+                        <th scope="col">email</th>
+                        <th scope="col">Date</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                {% for x in querys reversed %}
+                <tbody id="request_{{x.id}}">
+                    <tr class="dreq" data-bs-toggle="collapse">
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{x.company_name}}</td>
+                        <td>{{x.contact_person}}</td>
+                        <td>{{x.ph_no}}</td>
+                        <td>{{x.email}}</td>
+                        <td>{{x.date}}</td>
+                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{x.id}}">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </button></td>
+                    </tr>
+                </tbody>
+                <!-- Button trigger modal -->
+
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop_{{x.id}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-secondary"><strong>Date: </strong>{{x.date}}</p>
+                                <p><strong>Comapny name: </strong>{{x.company_name}}</p>
+                                <p><strong>Contact person: </strong>{{x.contact_person}}</p>
+                                <p><strong>Phone: </strong>{{x.ph_no}}</p>
+                                <p><strong>email: </strong>{{x.email}}</p>
+                                <p><strong>Street Address 1: </strong>{{x.street_address}}</p>
+                                <p><strong>Street Address 2: </strong>{{x.street_address_line_2}}</p>
+                                <p><strong>City: </strong>{{x.city}}</p>
+                                <p><strong>Country: </strong>{{x.country}}</p>
+                                <p><strong>Pincode: </strong>{{x.postal_code}}</p>
+                                <p>{{x.details}}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary"><a href="mailto:{{x.email}}" class="text-white">Get in touch</a></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </table>
+            <!-- End Table with hoverable rows -->
+        </div>
+    </div>
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+        <h4 class="text-center text-danger">No Request Found !</h4>
+    </div>
+    {% endif %}
+</main>
+{% endblock main %}

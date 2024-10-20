@@ -1,0 +1,115 @@
+{% extends 'baseDash.html' %}
+
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Dealer Management</h1>
+    </div><!-- End Page Title -->
+    {% if msg %}
+    <div class="alert alert-success" role="alert">
+        {{msg}}
+    </div>
+    {% endif %}
+    {% if errmsg %}
+    <div class="alert alert-danger" role="alert">
+        {{errmsg}}
+    </div>
+    {% endif %}
+    {% if dealer %}
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Table with stripped rows -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>City</th>
+                                    <th>Pincode</th>
+                                    <th>Country</th>
+                                    <th>email</th>
+                                    <th>Joining Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for x in dealer %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{x.firstname}}&nbsp;{{x.lastname}}</td>
+                                    <td>{{x.city}}</td>
+                                    <td>{{x.pincode}}</td>
+                                    <td>{{x.country}}</td>
+                                    <td>{{x.email}}</td>
+                                    <td>{{x.jdate}}</td>
+                                    <!-- <td><a href="/manageD/{{x.id}}"><button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop_add">Manage</button></a></td> -->
+                                    <td><button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop_add_{{x.id}}">Manage</button></td>
+                                    <div class="modal fade" id="staticBackdrop_add_{{x.id}}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Dealer
+                                                        Information</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form class="row g-3" method="post" action="/dealerManagement">
+                                                    {% csrf_token %}
+                                                    <div class="modal-body">
+                                                        <div class="col-12">
+                                                            <strong>
+                                                                <label for="inputNanme4"
+                                                                    class="form-label">{{x.firstname}}&nbsp;{{x.lastname}}</label><br>
+                                                            </strong>
+                                                                <span>{{x.city}}</span><br>
+                                                                <span>{{x.pincode}}</span><br>
+                                                                <span>{{x.country}}</span><br>
+                                                                <span>{{x.email}}</span><br>
+                                                                <span>{{x.jdate}}</span><br>
+                                                                <input name="did" hidden value="{{x.id}}" type="number" class="form-control" id="dealer_user_id">
+                                                            <!-- <input required type="text" name="fname" class="form-control" id="inputNanme4"> -->
+                                                            <span><b>Contact </b><a href="mailto:{{x.email}}"
+                                                                    class="text-white btn btn-primary"><i
+                                                                        class="bi bi-envelope-at"></i></a></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer d-flex justify-content-between">
+                                                        <div class="text-center">
+                                                            <button type="submit" name="delete_D"
+                                                                class="btn btn-danger">Remove Dealer</button>
+                                                            <!-- <button type="reset" class="btn btn-secondary">Reset</button> -->
+                                                        </div>
+                                                        <button type="button" class="btn btn-danger"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                                                    </div>
+                                                </form><!-- Vertical Form -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+        <h4 class="text-center text-danger">No Dealer Found !</h4>
+    </div>
+    {% endif %}
+</main>
+{% endblock main %}

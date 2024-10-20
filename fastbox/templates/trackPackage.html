@@ -1,0 +1,49 @@
+{% extends 'baseDash.html' %}
+
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Track Package</h1>
+    </div><!-- End Page Title -->
+    {% if errmsg %}
+    <div class="card" id="track">
+        <h5 class="text-danger m-5 text-center"></h5>
+    </div>
+    <div class="card">
+        <h5 class="text-danger m-5 text-center">Invalid tracker id</h5>
+    </div>
+    {% else %}
+    <div class="container-fluid bg-secondary py-5" id="track"></div>
+    <div class="card bg-info">
+        <h3 class="text-center text-success py-3">Track Shipment</h3>
+        <div class="card mt-3">
+        </div>
+        <div class="card mt-2">
+        </div>
+        <div class="progress-stacked mx-5 my-3">
+            <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0"
+                aria-valuemax="100" style="width: {{status}}%">
+                <div class="progress-bar progress-bar-striped bg-danger">
+                </div>
+            </div>
+            <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0"
+                aria-valuemax="100" style="width: 5%">
+                <div class="progress-bar progress-bar-striped bg-success">
+                    <img class="animalimg" src="{% static 'img/guy.png' %}" alt="guy">
+                </div>
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col-md-2 text-center">My place</div>
+            <div class="col-md-2 text-end">Dealer1</div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2 text-center">On Board</div>
+            <div class="col-md-1"></div>
+            <div class="col-md-2">Dealer2</div>
+            <div class="col-md-2 text-center">Recipent</div>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock main %}

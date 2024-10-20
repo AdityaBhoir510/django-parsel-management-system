@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<!-- main -->
+<div class="container-fluid bg-secondary p-5">
+
+    <div class="main container shadow mt-5 bg-light p-3">
+        <div class="container mt-5">
+            {% if msg %}
+            <div class="alert alert-success">{{msg}}</div>
+            {% endif %}
+            {% if errmsg %}
+            <div class="alert alert-danger">{{errmsg}}</div>
+            {% endif %}
+            <h2>Business Enquiry Form</h2>
+
+            <form class="row" action="/businessForm" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="companyName" class="form-label">Company Name*</label>
+                    <input type="text" class="form-control" id="companyName" name="cname" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactPerson" class="form-label">Contact Person*</label>
+                    <input type='text' class='form-control' id='contactPerson' name="cperson" required />
+                </div>
+
+                <!-- Address Fields -->
+                <label for="" class='form-label'>Address*</label>
+
+                <!-- Street Address -->
+                <div class="mb-3 col-md-6">
+                    <input type='text' class="form-control" id="Street-add" name="streetadd" placeholder='Street Address' required />
+                </div>
+
+                <!-- Street Address Line 2 -->
+                <div class="mb-3 col-md-6">
+                    <input type='text' class="form-control" id="Street-add-2" name="streetadd2" placeholder='Street Address Line 2'
+                        required />
+                </div>
+
+                <!-- City / Region / Postal Code / Country -->
+                <div class="mb-3 col-md-4">
+                    <input type='text' class="form-control" id="city" name="city" placeholder='City' required />
+                </div>
+                <div class="mb-3 col-md-4">
+                    <input type='number' class="form-control" id="postal_code" name="postalcode" placeholder='Postal Code' required />
+                </div>
+                <div class="mb-3 col-md-4">
+                    <input type='text' class="form-control" id="city" name="country" placeholder='Country' required />
+                </div>
+
+
+                <!-- Phone Number and Email Address Fields -->
+                <div class="mb-3 col-md-6">
+                    <label for="phone" class="form-label">Phone Number*</label>
+                    <input type='number' class="form-control" id="city" name="phone" placeholder='### ### ####' required />
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="email" class="form-label">Email Address*</label>
+                    <input type='email' class="form-control" id="city" name="email" placeholder='example@gmail.com' required />
+                </div>
+
+                <!-- Enquiry Details Field -->
+                <div class="mb-3">
+                    <label for="" class='form-label'>Enquiry Details</label>
+                    <textarea name="details" id="enquiry-deatils" class="form-control" name="details" cols="30" rows="10"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md-3 text-center">
+                    <button type="submit" class="btn btn-success rounded-pill px-5">Submit</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!-- end main -->
+</div>
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+{% endblock main %}

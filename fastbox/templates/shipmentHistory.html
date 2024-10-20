@@ -1,0 +1,43 @@
+{% extends 'baseDash.html' %}
+
+{% block main %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>History</h1>
+    </div><!-- End Page Title -->
+    <!-- Default Table -->
+        <table class="table">
+            <h5 class="card-header">Past shipment's</h5>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">shipment_id</th>
+                    <th scope="col">To</th>
+                    <th scope="col">postal code</th>
+                    <th scope="col">city</th>
+                    <th scope="col">country</th>
+                    <th scope="col">cost</th>
+                    <th scope="col">date</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in orders reversed %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{o.shipment_id}}</td>
+                    <td>{{o.n_recipent}}</td>
+                    <td>{{o.n_recipent_zip}}</td>
+                    <td>{{o.n_recipent_city}}</td>
+                    <td>{{o.n_recipent_country}}</td>
+                    <td>{{o.cost}}</td>
+                    <td>{{o.date}}</td>
+                    <td>{{o.mot}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- End Default Table Example -->
+</main>
+{% endblock main %}
+    
