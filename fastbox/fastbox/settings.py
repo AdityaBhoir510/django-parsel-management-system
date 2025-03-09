@@ -155,3 +155,8 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Fetch from environment
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+#razorpay
+RAZORPAY_KEY_ID = "rzp_test_QKznVRLGs0Kj3l"
+RAZORPAY_KEY_SECRET = "bZFUTDNrazYfSiyk4CPTyfNb"

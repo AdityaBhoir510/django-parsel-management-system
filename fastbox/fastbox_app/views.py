@@ -25,9 +25,6 @@ from django.conf import settings
 
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
-headers = { 
-  "apikey": "ffd51640-b7a0-11ee-8892-c79b591bd9ed"}
-
 
 
 # ------------------- TEST -------------------------
@@ -60,7 +57,7 @@ def home(request):
             try:
                 zd = dealer.objects.filter(pincode=request.POST['zipcity'])
             except:
-                zd = dealer.objects.filter(city=request.POST['zipcity'])
+                zd = dealer.objects.filter(city=request.POST['zipcity'].lower())
             if not zd:
                 context['nozipcodes']="zd"
                 print("no query")
@@ -594,6 +591,7 @@ def profile(request):
 @allowed_user(allowed_roles=['owner'])
 def dealerRequest(request):
     context = {}
+    context['tag'] = random.randint(1000,9999)
     r = dealer_request.objects.all()
     print("last dealer:",User.objects.last().username)
     context['request']=r
@@ -1042,6 +1040,8 @@ def makeShipment(request):
         sd_pin = sd_id.pincode 
         print('pincodes: ',sd_pin,rd_pin)
         #--------distance calculator---
+        api_key = "63238960-fce6-11ef-ac95-f79a56675cf6"
+        headers = {"apikey": api_key}
         params = (
             ("code",sd_pin),
             ("compare",rd_pin),
@@ -1049,6 +1049,7 @@ def makeShipment(request):
             );
         response = requests.get('https://app.zipcodebase.com/api/v1/distance', headers=headers, params=params);
         str_dic = response.text
+        print("zipcodebase: ",response.json())
         distance = json.loads(str_dic)
         print("distance:",distance['results'][str(rd_pin)])
         distkm =distance['results'][str(rd_pin)]
@@ -1069,7 +1070,7 @@ def makeShipment(request):
         price=float(request.session.get('amount'))
         print('orderid',request.session.get('orderid'))
         oid= str(sid)
-        client = razorpay.Client(auth=("rzp_test_rOgiQUix1apLnN", "Kvhw6yh0fS0JQKwgSE4ZxbKy"))
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
         client.set_app_details({"title" : "fastbox", "version" : "5.1.1"})
         data = { "amount": price*100, "currency": "INR", "receipt": "receiptid_"+oid }
         payment = client.order.create(data=data)
