@@ -1039,20 +1039,27 @@ def makeShipment(request):
         rd_pin = rd_id.pincode
         sd_pin = sd_id.pincode 
         print('pincodes: ',sd_pin,rd_pin)
+        print('pincodes: ',type(sd_pin),type(rd_pin))
         #--------distance calculator---
-        api_key = "63238960-fce6-11ef-ac95-f79a56675cf6"
-        headers = {"apikey": api_key}
+        # headers = { 
+        # "apikey": "63238960-fce6-11ef-ac95-f79a56675cf6"}
+
         params = (
-            ("code",sd_pin),
-            ("compare",rd_pin),
-            ("country","in"),
-            );
-        response = requests.get('https://app.zipcodebase.com/api/v1/distance', headers=headers, params=params);
+        ("apikey", "63238960-fce6-11ef-ac95-f79a56675cf6"),
+        ("code",rd_pin),
+        ("compare",sd_pin),
+        ("country","in"),
+        );
+
+        response = requests.get('https://app.zipcodebase.com/api/v1/distance',params=params);
+        print(response.text)
         str_dic = response.text
+        print()
         print("zipcodebase: ",response.json())
         distance = json.loads(str_dic)
-        print("distance:",distance['results'][str(rd_pin)])
-        distkm =distance['results'][str(rd_pin)]
+        # print("distance:",distance['results'])
+        print("distance:",distance['results'][str(sd_pin)])
+        distkm =distance['results'][str(sd_pin)]
         request.session['distance']= distkm
         context['payment']= "p"
         context['weight']= request.session.get('packageWeight')
